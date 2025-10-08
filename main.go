@@ -23,8 +23,8 @@ func main() {
 		logger.Fatalln(err)
 	}
 
-	userTrans := userSdk.NewHttpClient(os.Getenv("API_USER_URL"), "")
-	courseTrans := courseSdk.NewHttpClient(os.Getenv("API_COURSE_URL"), "")
+	userTrans := userSdk.NewHttpClient(os.Getenv("API_USER_URL"), os.Getenv("USER_API_TOKEN"))
+	courseTrans := courseSdk.NewHttpClient(os.Getenv("API_COURSE_URL"), os.Getenv("COURSE_API_TOKEN"))
 
 	enrollmentRepository := enrollment.NewRepository(logger, db)
 	enrollmentService := enrollment.NewService(enrollmentRepository, logger, userTrans, courseTrans)
