@@ -7,6 +7,8 @@ import (
 
 	"github.com/S3ergio31/curso-go-seccion-5-meta/meta"
 	"github.com/S3ergio31/curso-go-seccion-5-response/response"
+	courseSdk "github.com/S3ergio31/curso-go-seccion-5-sdk/course"
+	userSdk "github.com/S3ergio31/curso-go-seccion-5-sdk/user"
 	"github.com/go-kit/kit/endpoint"
 )
 
@@ -58,6 +60,10 @@ func makeCreateEndpoint(s Service) endpoint.Endpoint {
 			createRequest.CourseID,
 		)
 
+		if errors.As(err, &courseSdk.ErrorNotFound{}) || errors.As(err, &userSdk.ErrorNotFound{}) {
+			return nil, response.NotFound(err.Error())
+		}
+
 		if err != nil {
 			return nil, response.InternalServerError(err.Error())
 		}
@@ -108,6 +114,10 @@ func makeUpdateEndpoint(s Service) endpoint.Endpoint {
 			updateRequest.ID,
 			updateRequest.Status,
 		)
+
+		if errors.As(err, &ErrorInvalidStatus{}) {
+			return nil, response.BadRequest(err.Error())
+		}
 
 		if errors.As(err, &ErrorEnrollmentNotFound{}) {
 			return nil, response.NotFound(err.Error())

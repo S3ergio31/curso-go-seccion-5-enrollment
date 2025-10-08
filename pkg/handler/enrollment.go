@@ -35,7 +35,7 @@ func NewEnrollmentHttpServer(endpoints enrollment.Endpoints) http.Handler {
 		opts...,
 	)).Methods("GET")
 
-	router.Handle("/enrollments", httptransport.NewServer(
+	router.Handle("/enrollments/{id}", httptransport.NewServer(
 		endpoint.Endpoint(endpoints.Update),
 		decodeUpdateEnrollment,
 		encodeResponse,

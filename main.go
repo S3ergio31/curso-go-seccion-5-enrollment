@@ -9,6 +9,8 @@ import (
 	"github.com/S3ergio31/curso-go-seccion-5-enrollment/internal/enrollment"
 	"github.com/S3ergio31/curso-go-seccion-5-enrollment/pkg/bootstrap"
 	"github.com/S3ergio31/curso-go-seccion-5-enrollment/pkg/handler"
+	courseSdk "github.com/S3ergio31/curso-go-seccion-5-sdk/course"
+	userSdk "github.com/S3ergio31/curso-go-seccion-5-sdk/user"
 	"github.com/joho/godotenv"
 )
 
@@ -21,8 +23,11 @@ func main() {
 		logger.Fatalln(err)
 	}
 
+	userTrans := userSdk.NewHttpClient(os.Getenv("API_USER_URL"), "")
+	courseTrans := courseSdk.NewHttpClient(os.Getenv("API_COURSE_URL"), "")
+
 	enrollmentRepository := enrollment.NewRepository(logger, db)
-	enrollmentService := enrollment.NewService(enrollmentRepository, logger)
+	enrollmentService := enrollment.NewService(enrollmentRepository, logger, userTrans, courseTrans)
 	enrollmentEndpoints := enrollment.MakeEndpoints(enrollmentService)
 
 	address := fmt.Sprintf("%s:%s", os.Getenv("APP_URL"), os.Getenv("APP_PORT"))
